@@ -1,8 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Database,
+  Layout,
+  Settings,
+  Terminal,
+  FileJson,
+  Code2,
+  Monitor,
+  Globe,
+} from "lucide-react"; // Ikonkalar uchun qo'shimcha yordam
 import HeroImg from "../assets/Photo.avif";
 
-// --- 1. TRANSLATIONS (i18n) ---
+// --- REKLAMA (MARQUEE) KOMPONENTI ---
+const Marquee = ({ direction = "left", words, colorClass }) => {
+  return (
+    <div className="py-4 overflow-hidden flex whitespace-nowrap opacity-30 select-none pointer-events-none border-y border-white/5 bg-white/5">
+      <motion.div
+        initial={{ x: direction === "left" ? 0 : "-50%" }}
+        animate={{ x: direction === "left" ? "-50%" : 0 }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        className="flex gap-8 items-center"
+      >
+        {[...words, ...words, ...words, ...words].map((word, i) => (
+          <span
+            key={i}
+            className={`text-2xl md:text-3xl font-black uppercase tracking-tighter ${colorClass}`}
+          >
+            {word} •
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+};
+
+// --- TRANSLATIONS ---
 const translations = {
   uz: {
     about: "Men haqimda",
@@ -12,7 +45,7 @@ const translations = {
     heroTitle: "TEMUR",
     heroTitleSub: "MALIK",
     heroDesc:
-      "Full-Stack Developer. 16 yoshda. Namanganlik MERN mutaxassisi. Clean Code va Pixel-Perfect dizayn ustasi.",
+      "MERN & PostgreSQL mutaxassisi. 16 yoshda, Namanganlik Full-stack dasturchi. Frontend va Backend tizimlarini Pixel-Perfect darajasida qura olaman.",
     contactTitle: "Men bilan bog'laning",
     contactDesc: "Loyihalar yoki hamkorlik uchun doim ochiqman.",
     footer: "Namangan / 2026 / Abdullayev",
@@ -31,7 +64,7 @@ const translations = {
     heroTitle: "ТЕМУР",
     heroTitleSub: "МАЛИК",
     heroDesc:
-      "Full-Stack разработчик. 16 лет. MERN специалист из Намангана. Мастер Clean Code и Pixel-Perfect дизайна.",
+      "MERN & PostgreSQL специалист. 16 лет, Full-stack разработчик из Намангана. Создаю Frontend и Backend системы на уровне Pixel-Perfect.",
     contactTitle: "Свяжитесь со мной",
     contactDesc: "Я всегда открыт для проектов или сотрудничества.",
     footer: "Наманган / 2026 / Абдуллаев",
@@ -50,7 +83,7 @@ const translations = {
     heroTitle: "TEMUR",
     heroTitleSub: "MALIK",
     heroDesc:
-      "Full-Stack Developer. 16 years old. MERN expert from Namangan. Clean Code and Pixel-Perfect design master.",
+      "MERN & PostgreSQL expert. 16-year-old Full-stack developer from Namangan. Building Frontend & Backend systems with Pixel-Perfect precision.",
     contactTitle: "Contact Me",
     contactDesc: "I am always open for projects or collaborations.",
     footer: "Namangan / 2026 / Abdullayev",
@@ -63,7 +96,7 @@ const translations = {
   },
 };
 
-// --- 2. DATA (Skills & Projects) ---
+// --- DATA (24 ta Skills) ---
 const getIcon = (name) => `https://skillicons.dev/icons?i=${name}`;
 const skills = [
   { id: 1, name: "HTML", level: "90%", icon: getIcon("html"), dir: "left" },
@@ -107,45 +140,67 @@ const skills = [
     icon: getIcon("mongodb"),
     dir: "top",
   },
-  { id: 12, name: "Vite", level: "90%", icon: getIcon("vite"), dir: "right" },
-  { id: 13, name: "Redux", level: "90%", icon: getIcon("redux"), dir: "left" },
+  {
+    id: 12,
+    name: "PostgreSQL",
+    level: "90%",
+    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg",
+    dir: "right",
+  },
+  {
+    id: 13,
+    name: "PgAdmin",
+    level: "85%",
+    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg",
+    dir: "left",
+  },
   {
     id: 14,
-    name: "Postman",
-    level: "80%",
-    icon: getIcon("postman"),
+    name: "Swagger",
+    level: "95%",
+    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg",
     dir: "top",
   },
   {
     id: 15,
-    name: "Notion",
-    level: "60%",
-    icon: getIcon("notion"),
+    name: "Windows",
+    level: "100%",
+    icon: getIcon("windows"),
     dir: "right",
   },
-  {
-    id: 16,
-    name: "LinkedIn",
-    level: "70%",
-    icon: getIcon("linkedin"),
-    dir: "left",
-  },
-  { id: 17, name: "Git", level: "95%", icon: getIcon("git"), dir: "top" },
+  { id: 16, name: "Vite", level: "90%", icon: getIcon("vite"), dir: "left" },
+  { id: 17, name: "Redux", level: "90%", icon: getIcon("redux"), dir: "top" },
   {
     id: 18,
+    name: "Postman",
+    level: "80%",
+    icon: getIcon("postman"),
+    dir: "right",
+  },
+  { id: 19, name: "Git", level: "95%", icon: getIcon("git"), dir: "left" },
+  {
+    id: 20,
     name: "GitHub",
     level: "100%",
     icon: getIcon("github"),
-    dir: "right",
+    dir: "top",
   },
   {
-    id: 19,
+    id: 21,
     name: "VS Code",
     level: "100%",
     icon: getIcon("vscode"),
-    dir: "left",
+    dir: "right",
   },
-  { id: 20, name: "Figma", level: "80%", icon: getIcon("figma"), dir: "top" },
+  { id: 22, name: "Figma", level: "80%", icon: getIcon("figma"), dir: "left" },
+  { id: 23, name: "Notion", level: "60%", icon: getIcon("notion"), dir: "top" },
+  {
+    id: 24,
+    name: "Ubuntu",
+    level: "85%",
+    icon: getIcon("ubuntu"),
+    dir: "right",
+  },
 ];
 
 const projects = [
@@ -155,14 +210,14 @@ const projects = [
     desc: "Ish qidirish platformasi",
     link: "https://jobify.uz/home",
     featured: true,
-    tags: ["React", "Node", "MongoDB"],
+    tags: ["React", "Node", "PostgreSQL", "Tailwind"],
   },
   {
     id: 2,
     title: "Frontend Exam",
     desc: "Dizayn asosidagi imtihon loyihasi",
     link: "https://frontend-exam-wine.vercel.app/",
-    tags: ["Tailwind", "HTML"],
+    tags: ["Js", "React", "API"],
   },
   {
     id: 3,
@@ -191,7 +246,7 @@ const projects = [
     desc: "Backend tizimlar uchun repositoriya",
     link: "https://github.com/AbdullayevTemurmalik/BackendDev",
     type: "github",
-    tags: ["NodeJS", "Express"],
+    tags: ["NodeJS", "Express", "Swagger"],
   },
   {
     id: 7,
@@ -207,38 +262,10 @@ const projects = [
     desc: "Ma'lumotlar bilan ishlash tizimi",
     link: "https://github.com/AbdullayevTemurmalik/CRUD",
     type: "github",
-    tags: ["MongoDB", "CRUD"],
+    tags: ["FakeJson", "CRUD"],
   },
 ];
 
-// --- 3. ICONS ---
-const GithubIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="22"
-    height="22"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.28 1.15-.28 2.35 0 3.5-.73 1.02-1.08 2.25-1 3.5 0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-    <path d="M9 18c-4.51 2-5-2-7-2" />
-  </svg>
-);
-const CodewarsIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="22"
-    height="22"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M20.37 3.03l-7.79 7.79c-1.33-1.33-3.48-1.33-4.81 0-1.33 1.33-1.33 3.48 0 4.81 1.33 1.33 3.48 1.33 4.81 0l7.79-7.79c3.04 3.04 3.04 7.97 0 11.01-3.04 3.04-7.97 3.04-11.01 0-3.04-3.04-3.04-7.97 0-11.01 3.04-3.04 7.97-3.04 11.01 0-3.04-3.04-3.04-7.97 0-11.01 3.04-3.04 7.97-3.04 11.01 0z" />
-  </svg>
-);
 const SunIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -253,14 +280,7 @@ const SunIcon = () => (
     className="text-yellow-400"
   >
     <circle cx="12" cy="12" r="4" />
-    <path d="M12 2v2" />
-    <path d="M12 20v2" />
-    <path d="m4.93 4.93 1.41 1.41" />
-    <path d="m17.66 17.66 1.41 1.41" />
-    <path d="M2 12h2" />
-    <path d="M20 12h2" />
-    <path d="m6.34 17.66-1.41 1.41" />
-    <path d="m19.07 4.93-1.41 1.41" />
+    <path d="M12 2v2m0 16v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2m-17.66 5.66 1.41-1.41m11.32-11.32 1.41-1.41" />
   </svg>
 );
 const MoonIcon = () => (
@@ -281,11 +301,12 @@ const MoonIcon = () => (
 );
 
 const Aboutme = () => {
-  const [lang, setLang] = useState("uz");
-  const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem("theme");
-    return saved ? saved === "dark" : true;
-  });
+  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "uz");
+  const [darkMode, setDarkMode] = useState(() =>
+    localStorage.getItem("theme")
+      ? localStorage.getItem("theme") === "dark"
+      : true,
+  );
 
   const t = translations[lang];
   const flags = { uz: "🇺🇿", ru: "🇷🇺", en: "🇺🇸" };
@@ -293,6 +314,9 @@ const Aboutme = () => {
   useEffect(() => {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+  useEffect(() => {
+    localStorage.setItem("lang", lang);
+  }, [lang]);
 
   const getVariants = (dir) => ({
     hidden: {
@@ -303,10 +327,9 @@ const Aboutme = () => {
     visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.8 } },
   });
 
-  // Rejimga qarab rang klasslari
   const themeClass = darkMode
-    ? "bg-[#020617] text-slate-300 selection:bg-blue-500/30"
-    : "bg-slate-50 text-slate-800 selection:bg-blue-200";
+    ? "bg-[#020617] text-slate-300"
+    : "bg-slate-50 text-slate-800";
   const navClass = darkMode
     ? "bg-[#020617]/90 border-white/5"
     : "bg-white/90 border-black/5";
@@ -319,48 +342,25 @@ const Aboutme = () => {
     <div
       className={`${themeClass} min-h-screen font-sans transition-colors duration-500 overflow-x-hidden`}
     >
-      {/* --- HEADER --- */}
       <nav
-        className={`fixed top-0 w-full z-[100] ${navClass} backdrop-blur-md border-b px-4 md:px-10 py-4 flex justify-between items-center transition-colors duration-500`}
+        className={`fixed top-0 w-full z-[100] ${navClass} backdrop-blur-md border-b px-4 md:px-10 py-4 flex justify-between items-center`}
       >
         <motion.div
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className={`cursor-pointer ${textTitleClass} font-black text-xl tracking-tighter transition-colors`}
+          className={`cursor-pointer ${textTitleClass} font-black text-xl tracking-tighter`}
         >
           TM<span className="text-blue-500">.dev</span>
         </motion.div>
-
-        <div
-          className={`hidden lg:flex gap-8 text-[10px] font-bold uppercase tracking-[2px] ${darkMode ? "text-slate-300" : "text-slate-600"}`}
-        >
-          <a href="#about" className="hover:text-blue-500 transition">
-            {t.about}
-          </a>
-          <a href="#skills" className="hover:text-blue-500 transition">
-            {t.skills}
-          </a>
-          <a href="#projects" className="hover:text-blue-500 transition">
-            {t.projects}
-          </a>
-          <a href="#contact" className="hover:text-blue-500 transition">
-            {t.contact}
-          </a>
-        </div>
-
         <div className="flex items-center gap-4">
-          {/* Rejimni o'zgartirgich */}
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className={`p-2 rounded-full border transition-all ${darkMode ? "border-white/10 hover:bg-white/5" : "border-black/10 hover:bg-black/5"}`}
+            className={`p-2 rounded-full border transition-all ${darkMode ? "border-white/10" : "border-black/10"}`}
           >
             {darkMode ? <SunIcon /> : <MoonIcon />}
           </button>
-
-          <div
-            className={`flex rounded-full p-1 border ${darkMode ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"}`}
-          >
+          <div className="flex rounded-full p-1 border border-white/10">
             {["uz", "ru", "en"].map((l) => (
               <button
                 key={l}
@@ -374,7 +374,7 @@ const Aboutme = () => {
         </div>
       </nav>
 
-      {/* --- HERO SECTION --- */}
+      {/* HERO SECTION */}
       <section
         id="about"
         className="min-h-screen flex flex-col justify-center items-center px-6 pt-20"
@@ -384,20 +384,53 @@ const Aboutme = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
-            className="text-left"
           >
             <h2
-              className={`text-6xl md:text-8xl font-black ${textTitleClass} mb-4 tracking-tighter uppercase leading-none transition-colors`}
+              className={`text-6xl md:text-8xl font-black ${textTitleClass} mb-4 tracking-tighter uppercase leading-none`}
             >
               {t.heroTitle}
               <br />
               <span className="text-blue-500">{t.heroTitleSub}</span>
             </h2>
-            <p
-              className={`${darkMode ? "text-slate-400" : "text-slate-600"} text-base md:text-xl max-w-xl mt-6 font-light transition-colors`}
-            >
+            <p className="text-base md:text-xl max-w-xl mt-6 font-light">
               {t.heroDesc}
             </p>
+
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div
+                className={`p-5 rounded-2xl ${cardClass} border-l-4 border-blue-500 hover:scale-[1.02] transition-transform`}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Layout className="w-5 h-5 text-blue-500" />
+                  <h4
+                    className={`text-sm font-black uppercase ${textTitleClass}`}
+                  >
+                    Frontend Mastery
+                  </h4>
+                </div>
+                <p className="text-xs text-slate-500">
+                  React JS, Next JS va Vue JS orqali murakkab interfeyslarni
+                  Pixel-Perfect darajasida quraman.
+                </p>
+              </div>
+              <div
+                className={`p-5 rounded-2xl ${cardClass} border-l-4 border-emerald-500 hover:scale-[1.02] transition-transform`}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Database className="w-5 h-5 text-emerald-500" />
+                  <h4
+                    className={`text-sm font-black uppercase ${textTitleClass}`}
+                  >
+                    Backend Mastery
+                  </h4>
+                </div>
+                <p className="text-xs text-slate-500">
+                  Node JS, Express va PostgreSQL yordamida Swagger bilan
+                  hujjatlashtirilgan xavfsiz API tizimlari.
+                </p>
+              </div>
+            </div>
+
             <div className="mt-10 flex flex-wrap gap-4">
               <a
                 href="#contact"
@@ -407,7 +440,7 @@ const Aboutme = () => {
               </a>
               <a
                 href="#projects"
-                className={`border ${darkMode ? "border-white/10 text-white hover:bg-white/5" : "border-black/10 text-slate-800 hover:bg-black/5"} px-8 py-3 rounded-xl font-bold transition`}
+                className={`border ${darkMode ? "border-white/10 text-white" : "border-black/10 text-slate-800"} px-8 py-3 rounded-xl font-bold transition`}
               >
                 {t.projBtn}
               </a>
@@ -417,22 +450,33 @@ const Aboutme = () => {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
-            className="flex justify-center lg:justify-end"
           >
             <img
               src={HeroImg}
               alt="Hero"
-              className={`w-72 h-72 md:w-[450px] md:h-[450px] object-cover rounded-3xl border ${darkMode ? "border-white/10" : "border-black/10"} shadow-2xl transition-colors`}
+              className="w-72 h-72 md:w-[450px] md:h-[450px] object-cover rounded-3xl border border-white/10 shadow-2xl"
             />
           </motion.div>
         </div>
       </section>
 
-      {/* --- SKILLS SECTION --- */}
+      <Marquee
+        direction="right"
+        words={[
+          "PostgreSQL Expert",
+          "PgAdmin 4",
+          "Swagger Documentation",
+          "MERN Stack",
+          "Frontend Architect",
+        ]}
+        colorClass="text-blue-500"
+      />
+
+      {/* SKILLS */}
       <section id="skills" className="py-24 px-4 md:px-10 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h3
-            className={`text-3xl md:text-5xl font-black ${textTitleClass} mb-4 uppercase tracking-tighter underline decoration-blue-500 underline-offset-8 transition-colors`}
+            className={`text-3xl md:text-5xl font-black ${textTitleClass} mb-4 uppercase tracking-tighter underline decoration-blue-500 underline-offset-8`}
           >
             {t.stackTitle}
           </h3>
@@ -447,11 +491,17 @@ const Aboutme = () => {
               viewport={{ once: false, amount: 0.1 }}
               className={`${cardClass} p-5 rounded-2xl flex items-center gap-4 hover:border-blue-500/50 transition-all group backdrop-blur-sm`}
             >
-              <img
-                src={skill.icon}
-                alt={skill.name}
-                className="w-10 h-10 group-hover:rotate-12 transition-all duration-500"
-              />
+              <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
+                <img
+                  src={skill.icon}
+                  alt={skill.name}
+                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://cdn-icons-png.flaticon.com/512/25/25231.png";
+                  }} // Github ikonkasi zaxira sifatida
+                />
+              </div>
               <div className="flex-1">
                 <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-1.5 uppercase">
                   <span>{skill.name}</span>
@@ -463,7 +513,7 @@ const Aboutme = () => {
                   <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: skill.level }}
-                    transition={{ duration: 1.5 }}
+                    transition={{ duration: 5 }}
                     className="h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
                   />
                 </div>
@@ -473,13 +523,25 @@ const Aboutme = () => {
         </div>
       </section>
 
-      {/* --- PROJECTS SECTION --- */}
+      <Marquee
+        direction="left"
+        words={[
+          "Clean Code",
+          "API Security",
+          "Database Schema",
+          "UI/UX Design",
+          "Pixel Perfect",
+        ]}
+        colorClass="text-emerald-500"
+      />
+
+      {/* PROJECTS SECTION (Saqlangan) */}
       <section
         id="projects"
-        className={`py-24 px-4 md:px-10 max-w-7xl mx-auto border-t ${darkMode ? "border-white/5" : "border-black/5"}`}
+        className="py-24 px-4 md:px-10 max-w-7xl mx-auto border-t border-white/5"
       >
         <div
-          className={`text-center mb-16 ${textTitleClass} font-black text-4xl uppercase tracking-tighter transition-colors`}
+          className={`text-center mb-16 ${textTitleClass} font-black text-4xl uppercase tracking-tighter`}
         >
           {t.projTitle}
         </div>
@@ -503,14 +565,12 @@ const Aboutme = () => {
                     </span>
                   ))}
                 </div>
-                <span
-                  className={`${darkMode ? "text-white/20" : "text-black/10"} text-4xl font-black italic`}
-                >
+                <span className="opacity-20 text-4xl font-black italic">
                   0{idx + 1}
                 </span>
               </div>
               <h4
-                className={`text-2xl font-black ${textTitleClass} mb-2 uppercase transition-colors`}
+                className={`text-2xl font-black ${textTitleClass} mb-2 uppercase`}
               >
                 {proj.title}
               </h4>
@@ -518,6 +578,7 @@ const Aboutme = () => {
               <a
                 href={proj.link}
                 target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center gap-2 text-white text-xs font-bold bg-blue-600 px-6 py-2.5 rounded-full hover:bg-blue-700 transition uppercase tracking-widest"
               >
                 {proj.type === "github" ? t.code : t.visit}
@@ -527,13 +588,24 @@ const Aboutme = () => {
         </div>
       </section>
 
-      {/* --- CONTACT SECTION --- */}
+      <Marquee
+        direction="right"
+        words={[
+          "Fullstack Specialist",
+          "Software Engineer",
+          "Modern Tech",
+          "Namangan 2026",
+        ]}
+        colorClass="text-blue-500"
+      />
+
+      {/* CONTACT (Saqlangan) */}
       <section
         id="contact"
-        className={`py-24 px-4 md:px-10 max-w-5xl mx-auto border-t ${darkMode ? "border-white/5" : "border-black/5"}`}
+        className="py-24 px-4 md:px-10 max-w-5xl mx-auto border-t border-white/5"
       >
         <div
-          className={`text-center mb-16 ${textTitleClass} font-black text-4xl uppercase tracking-tighter transition-colors`}
+          className={`text-center mb-16 ${textTitleClass} font-black text-4xl uppercase tracking-tighter`}
         >
           {t.contactTitle}
         </div>
@@ -569,9 +641,7 @@ const Aboutme = () => {
         </div>
       </section>
 
-      <footer
-        className={`py-16 text-center border-t ${darkMode ? "border-white/5 text-white" : "border-black/5 text-slate-800"} text-[10px] font-mono tracking-[10px] uppercase transition-colors`}
-      >
+      <footer className="py-16 text-center border-t border-white/5 text-[10px] font-mono tracking-[10px] uppercase">
         {t.footer}
       </footer>
     </div>
@@ -582,10 +652,11 @@ const ContactCard = ({ href, label, val, color, darkMode }) => (
   <a
     href={href}
     target="_blank"
+    rel="noreferrer"
     className={`${darkMode ? "bg-white/[0.02] border-white/5" : "bg-white border-black/5 shadow-sm"} p-6 rounded-3xl transition-all border ${color}`}
   >
     <div
-      className={`${darkMode ? "text-white" : "text-slate-900"} mb-2 uppercase tracking-widest transition-colors`}
+      className={`${darkMode ? "text-white" : "text-slate-900"} mb-2 uppercase tracking-widest`}
     >
       {label}
     </div>
