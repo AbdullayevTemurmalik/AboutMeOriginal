@@ -89,9 +89,10 @@ const Contact = ({ t, textTitleClass, darkMode, cardClass }) => {
 
         {/* Contact Form */}
         <motion.div 
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className={`${cardClass} p-8 rounded-[2.5rem] backdrop-blur-md relative`}
         >
           <div className="absolute top-0 right-0 p-8 opacity-10">

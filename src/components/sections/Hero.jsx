@@ -20,9 +20,9 @@ const Hero = ({ t, darkMode }) => {
 
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
           <h2
             className={`text-5xl sm:text-6xl md:text-8xl font-black ${textTitleClass} mb-4 tracking-tighter uppercase leading-[0.9]`}
@@ -98,9 +98,9 @@ const Hero = ({ t, darkMode }) => {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative flex justify-center lg:justify-end mt-12 lg:mt-0"
         >
           <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-emerald-500/20 rounded-[3rem] blur-3xl transform -rotate-6"></div>
